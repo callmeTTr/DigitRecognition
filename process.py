@@ -50,7 +50,19 @@ def chunk_flattening(images):
     return np.array(chunk_matrix)
 
 def histogram_vectorize(images):
-    pass
+    all = []
+    for image in images:
+        cnt = []
+        histogram_vector = []
+        for i in range(256):
+            cnt.append(0)
+        for i in range(IMG_SIZE):
+            for j in range(IMG_SIZE):
+                cnt[int(image[i][j])] += 1
+        for i in cnt:
+            histogram_vector.append(i / (IMG_SIZE * IMG_SIZE))     
+        all.append(histogram_vector)
+    return np.array(all)
 
 def extract_features(images):
     flat_vector = flat_vectorize(images)
