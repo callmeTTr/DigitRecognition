@@ -17,7 +17,7 @@ def load_data():
     combined_train_flat = process.combine(train_flat, y_train)
     combined_train_chunk = process.combine(train_chunk, y_train)
     combined_train_histogram = process.combine(train_histogram, y_train)
-    return combined_train_flat, combined_train_chunk, combined_train_histogram, x_train[0]
+    return combined_train_flat, combined_train_chunk, combined_train_histogram
 
 extract_methods = {
     0: "FLAT",
@@ -55,8 +55,8 @@ if option == "Upload Image":
                 #print(image_arr[0])
                 image_arr = image_arr.mean(axis = 2)
                 image_arr = np.round(image_arr, decimals = 0)
-                print(image_arr)
-                combined_train_flat, combined_train_chunk, combined_train_histogram, x = load_data()
+                
+                combined_train_flat, combined_train_chunk, combined_train_histogram = load_data()
                 #print(x)
                 results = predict.predict_with_methods(image_arr, K, extract_methods, combined_train_flat, combined_train_chunk, combined_train_histogram)
                 for method_name, answer in results:
@@ -91,9 +91,9 @@ if option == "Draw":
                 #print(image_arr[0])
                 image_arr = image_arr.mean(axis = 2)
                 image_arr = np.round(image_arr, decimals = 0)
-                print(image_arr)
-                combined_train_flat, combined_train_chunk, combined_train_histogram, x = load_data()
-                #print(x)
+                
+                combined_train_flat, combined_train_chunk, combined_train_histogram = load_data()
+                
                 results = predict.predict_with_methods(image_arr, K, extract_methods, combined_train_flat, combined_train_chunk, combined_train_histogram)
                 for method_name, answer in results:
                     st.write(f"{method_name}'s prediction: {answer}")
