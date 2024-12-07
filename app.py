@@ -17,7 +17,7 @@ def load_data():
     combined_train_flat = process.combine(train_flat, y_train)
     combined_train_chunk = process.combine(train_chunk, y_train)
     combined_train_histogram = process.combine(train_histogram, y_train)
-    return combined_train_flat, combined_train_chunk, combined_train_histogram
+    return combined_train_flat, combined_train_chunk, combined_train_histogram, x_train[0]
 
 extract_methods = {
     0: "FLAT",
@@ -47,11 +47,20 @@ if option == "Upload Image":
             raw_image = Image.open(uploaded_file)
 
             image = raw_image.resize((28, 28), Image.NEAREST)
-
+            image = image.convert('RGB')
             st.image(image, caption="Received image")
 
             if st.button("Submit"):
-                st.write('Result = Pé đức thư giãn')
+                image_arr = np.array(image)
+                #print(image_arr[0])
+                image_arr = image_arr.mean(axis = 2)
+                image_arr = np.round(image_arr, decimals = 0)
+                print(image_arr)
+                combined_train_flat, combined_train_chunk, combined_train_histogram, x = load_data()
+                #print(x)
+                results = predict.predict_with_methods(image_arr, K, extract_methods, combined_train_flat, combined_train_chunk, combined_train_histogram)
+                for method_name, answer in results:
+                    st.write(f"{method_name}'s prediction: {answer}")
 
 if option == "Draw":
     left, right = st.columns(2)
@@ -75,14 +84,15 @@ if option == "Draw":
         
             raw_image = Image.fromarray(canvas_result.image_data.astype('uint8'))
             image = raw_image.resize((28, 28), Image.NEAREST)
-
+            image = image.convert('RGB')
             st.image(image, caption="Received image")
             if st.button("Submit"):
-                #print(image)
                 image_arr = np.array(image)
+                #print(image_arr[0])
                 image_arr = image_arr.mean(axis = 2)
+                image_arr = np.round(image_arr, decimals = 0)
                 print(image_arr)
-                combined_train_flat, combined_train_chunk, combined_train_histogram = load_data()
+                combined_train_flat, combined_train_chunk, combined_train_histogram, x = load_data()
                 #print(x)
                 results = predict.predict_with_methods(image_arr, K, extract_methods, combined_train_flat, combined_train_chunk, combined_train_histogram)
                 for method_name, answer in results:
