@@ -14,7 +14,7 @@ extract_methods = {
 }
 
 def fix(raw_image):
-    image = raw_image.convert('L')
+    image = raw_image.convert('RGB')
     image = image.resize((28, 28), Image.LANCZOS)
     st.image(image, caption="Received image")
 
